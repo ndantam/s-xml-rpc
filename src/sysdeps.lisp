@@ -95,6 +95,7 @@
                         :input handler-fn)) *server-processes*))
   name)
 
+
 (defun stop-server (name)
   "Kill a server process by name (as started by start-standard-server)"
   #+lispworks
@@ -116,4 +117,41 @@
                                      :key #'car :test #'string=)))
   name)
 
-;;;; eof
+
+
+;;; Threaded implementation
+;;; TODO: handle hung clients, logging
+
+;; (defun run-server (server-socket connection-handler)
+;;   (unwind-protect
+;;        (loop while t
+;;           for socket =
+;;             (handler-case
+;;                 (usocket:socket-accept server-socket)
+;;               (condition (x)
+;;                 (format t "Socket condition: ~A" x)
+;;                 nil))
+;;           while socket
+;;           do (unwind-protect
+;;                   (funcall connection-handler (usocket:socket-stream socket))
+;;                (usocket:socket-close socket)))
+;;     (usocket:socket-close server-socket)))
+
+;; (defun start-standard-server (&key port name connection-handler)
+;;   (let* ((server-socket (usocket:socket-listen "127.0.0.1" port :reuse-address t :reuseaddress t))
+;;          (thread
+;;           (sb-thread:make-thread (lambda () (run-server server-socket connection-handler))
+;;                                  :name (concatenate 'string "xml-rpc " name))))
+;;     (push (list name server-socket thread)
+;;           *server-processes*)))
+
+
+;; (defun stop-server (name)
+;;   (destructuring-bind (name socket thread)
+;;       (assoc name *server-processes* :test #'string=)
+;;     (declare (ignore name))
+;;     (usocket:socket-close socket)
+;;     (sb-thread:terminate-thread thread))
+;;   (setf *server-processes* (delete name *server-processes*
+;;                                    :key #'car :test #'string=))
+;;   name)
