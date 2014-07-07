@@ -548,11 +548,12 @@
 
 (defparameter *counter* 0 "Unique ID for incoming connections")
 
-(defun start-xml-rpc-server (&key (port *xml-rpc-port*) (url *xml-rpc-url*) (agent *xml-rpc-agent*))
+(defun start-xml-rpc-server (&key (port *xml-rpc-port*) (url *xml-rpc-url*) (agent *xml-rpc-agent*) local-path)
   "Start an XML-RPC server in a separate process"
   (start-standard-server
-   :name (format nil "xml-rpc server ~a:~d" url port)
+   :name (format nil "xml-rpc server ~a:~d" url (or port local-path))
    :port port
+   :local-path local-path
    :connection-handler #'(lambda (client-stream)
                            (let ((id (incf *counter*)))
                              (format-debug (or *xml-rpc-debug-stream* t) "spawned connection handler ~d~%" id)

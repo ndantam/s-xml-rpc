@@ -48,7 +48,11 @@
 
 (defvar *server-processes* nil)
 
-(defun start-standard-server (&key port name connection-handler)
+;; TODO: handle EADDRINUSE for local sockets
+;;       Maybe unlink file on close?
+;;       Maybe Add an if-exists keyword to unlink before open?
+
+(defun start-standard-server (&key port name connection-handler local-path)
   "Start a server process with name, listening on port, delegating to connection-handler with stream as argument"
   #+lispworks (comm:start-up-server
                :function #'(lambda (socket-handle)
@@ -74,8 +78,10 @@
                           (funcall connection-handler client-stream)))
                      (close server-socket)))))
   #+sbcl (let* ((socket
-                 (make-instance 'sb-bsd-sockets:inet-socket :type :stream
-                                :protocol :tcp))
+                 (cond (port (make-instance 'sb-bsd-sockets:inet-socket :type :stream
+                                            :protocol :tcp))
+                       (local-path (make-instance 'sb-bsd-sockets:local-socket :type :stream))
+                       (t (error "Must give port or local-path"))))
                 (handler-fn (lambda (fd)
                               (declare (ignore fd))
                               (let ((stream
@@ -87,7 +93,9 @@
                                       :buffering :none)))
                                 (funcall connection-handler stream)))))
            (setf (sb-bsd-sockets:sockopt-reuse-address socket) t)
-           (sb-bsd-sockets:socket-bind socket #(0 0 0 0) port)
+           (if port
+               (sb-bsd-sockets:socket-bind socket #(0 0 0 0) port)
+               (sb-bsd-sockets:socket-bind socket local-path))
            (sb-bsd-sockets:socket-listen socket 15)
            (push (list name socket
                        (sb-sys:add-fd-handler
