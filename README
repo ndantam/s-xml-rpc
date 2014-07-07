@@ -1,0 +1,14 @@
+S-XML-RPC
+=========
+
+S-XML-RPC is an implementation of XML-RPC in Common Lisp for both
+client and server. Originally it was written by Sven Van Caekenberghe.
+
+QUIRKS
+------
+
+* Under SBCL (and probably CMUCL) the s-xml-rpc http server uses the
+  built in event loop (SERVE-EVENT).  This does not interact well with
+  threaded SLIME.  Workaround is to use SWANK's :FD-HANLDER as follows:
+
+    (setq swank:*communication-style* :fd-handler)
