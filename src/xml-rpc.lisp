@@ -515,7 +515,7 @@
   (handler-bind ((error #'(lambda (c)
                             (format-debug (or *xml-rpc-debug-stream* t)
                                           "xml-rpc server connection handler failed with ~a~%" c)
-                            (error c)
+                            ;; (error c)
                             (return-from xml-rpc-server-connection-handler nil))))
     (let ((header (read-line connection nil nil)))
       (when (null header) (error "no request from client"))
