@@ -28,43 +28,43 @@
 (defun |validator1.countTheEntities| (string)
   (assert (stringp string))
   (let ((left-angle-brackets (count #\< string))
-	(right-angle-brackets (count #\> string))
-	(apostrophes (count #\' string))
-	(quotes (count #\" string))
-	(ampersands (count #\& string)))
+        (right-angle-brackets (count #\> string))
+        (apostrophes (count #\' string))
+        (quotes (count #\" string))
+        (ampersands (count #\& string)))
     (xml-rpc-struct :|ctLeftAngleBrackets| left-angle-brackets
-		    :|ctRightAngleBrackets| right-angle-brackets
-		    :|ctApostrophes| apostrophes
-		    :|ctQuotes| quotes
-		    :|ctAmpersands| ampersands)))
+                    :|ctRightAngleBrackets| right-angle-brackets
+                    :|ctApostrophes| apostrophes
+                    :|ctQuotes| quotes
+                    :|ctAmpersands| ampersands)))
 
 (defun |validator1.manyTypesTest| (number boolean string double dateTime base64)
   (assert
    (and (integerp number)
-	(or (null boolean) (eq boolean t))
-	(stringp string)
-	(floatp double)
-	(xml-rpc-time-p dateTime)
-	(and (arrayp base64)
-	     (= (array-rank base64) 1)
-	     (subtypep (array-element-type base64)
-		       '(unsigned-byte 8)))))
+        (or (null boolean) (eq boolean t))
+        (stringp string)
+        (floatp double)
+        (xml-rpc-time-p dateTime)
+        (and (arrayp base64)
+             (= (array-rank base64) 1)
+             (subtypep (array-element-type base64)
+                       '(unsigned-byte 8)))))
   (list number boolean string double dateTime base64))
 
 (defun |validator1.arrayOfStructsTest| (array)
   (assert (listp array))
   (reduce #'+
-	  (mapcar #'(lambda (struct)
-		      (assert (xml-rpc-struct-p struct))
-		      (get-xml-rpc-struct-member struct :|curly|))
-		  array)
-	  :initial-value 0))
+          (mapcar #'(lambda (struct)
+                      (assert (xml-rpc-struct-p struct))
+                      (get-xml-rpc-struct-member struct :|curly|))
+                  array)
+          :initial-value 0))
 
 (defun |validator1.simpleStructReturnTest| (number)
   (assert (integerp number))
   (xml-rpc-struct :|times10| (* number 10)
-		  :|times100| (* number 100)
-		  :|times1000| (* number 1000)))
+                  :|times100| (* number 100)
+                  :|times1000| (* number 1000)))
 
 (defun |validator1.moderateSizeArrayCheck| (array)
   (assert (listp array))
@@ -73,14 +73,14 @@
 (defun |validator1.nestedStructTest| (struct)
   (assert (xml-rpc-struct-p struct))
   (let* ((year (get-xml-rpc-struct-member struct :\2000))
-	 (april (get-xml-rpc-struct-member year :\04))
-	 (first (get-xml-rpc-struct-member april :\01)))
+         (april (get-xml-rpc-struct-member year :\04))
+         (first (get-xml-rpc-struct-member april :\01)))
     (|validator1.easyStructTest| first)))
 
-(import '(|validator1.echoStructTest| 
-          |validator1.easyStructTest| 
-          |validator1.countTheEntities| 
-          |validator1.manyTypesTest| 
+(import '(|validator1.echoStructTest|
+          |validator1.easyStructTest|
+          |validator1.countTheEntities|
+          |validator1.manyTypesTest|
           |validator1.arrayOfStructsTest|
           |validator1.simpleStructReturnTest|
           |validator1.moderateSizeArrayCheck|

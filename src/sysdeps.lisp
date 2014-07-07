@@ -69,9 +69,9 @@
                                                        :local-port port
                                                        :reuse-address t)))
                    (unwind-protect
-                       (loop 
+                       (loop
                         (let ((client-stream (ccl:accept-connection server-socket)))
-                          (funcall connection-handler client-stream))) 
+                          (funcall connection-handler client-stream)))
                      (close server-socket)))))
   #+sbcl (let* ((socket
                  (make-instance 'sb-bsd-sockets:inet-socket :type :stream
@@ -90,7 +90,7 @@
            (sb-bsd-sockets:socket-bind socket #(0 0 0 0) port)
            (sb-bsd-sockets:socket-listen socket 15)
            (push (list name socket
-                       (sb-sys:add-fd-handler 
+                       (sb-sys:add-fd-handler
                         (sb-bsd-sockets:socket-file-descriptor socket)
                         :input handler-fn)) *server-processes*))
   name)
@@ -102,7 +102,7 @@
     (when server-process
       (mp:process-kill server-process)))
   #+openmcl
-  (let ((server-process (find name (ccl:all-processes) 
+  (let ((server-process (find name (ccl:all-processes)
                               :key #'ccl:process-name :test #'string-equal)))
     (when server-process
       (ccl:process-kill server-process)))

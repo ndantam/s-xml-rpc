@@ -11,12 +11,12 @@
 ;;;; (http://opensource.franz.com/preamble.html), also known as the LLGPL.
 
 (defpackage s-xml-rpc
-  (:use 
-   common-lisp 
-   #+ccl ccl 
+  (:use
+   common-lisp
+   #+ccl ccl
    #+lispworks mp
    #+lispworks comm
-   s-xml 
+   s-xml
    s-base64)
   (:export
    #:xml-rpc-call

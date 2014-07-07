@@ -12,7 +12,7 @@
 ;;;;
 ;;;; Capabilities:
 ;;;; http://groups.yahoo.com/group/xml-rpc/message/2897
-;;;; 
+;;;;
 ;;;;
 ;;;; Copyright (C) 2004 Rudi Schlatte
 ;;;;

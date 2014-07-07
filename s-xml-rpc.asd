@@ -23,7 +23,7 @@
 
   :components
   ((:module
-    :src 
+    :src
     :components ((:file "base64")
                  (:file "package" :depends-on ("base64"))
                  (:file "sysdeps" :depends-on ("package"))
