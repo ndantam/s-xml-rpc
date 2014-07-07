@@ -11,4 +11,4 @@ QUIRKS
   built in event loop (SERVE-EVENT).  This does not interact well with
   threaded SLIME.  Workaround is to use SWANK's :FD-HANLDER as follows:
 
-    (setq swank:*communication-style* :fd-handler)
+    `(setq swank:*communication-style* :fd-handler)`
